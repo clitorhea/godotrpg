@@ -1,0 +1,70 @@
+[gd_scene load_steps=10 format=3 uid="uid://bhrnqem6tc8bo"]
+
+[ext_resource type="Texture2D" uid="uid://c3al7fo2th0mu" path="res://assets/Tiny Swords (Update 010)/Factions/Knights/Troops/Warrior/Blue/Warrior_Blue.png" id="1_acmcs"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vnrop"]
+atlas = ExtResource("1_acmcs")
+region = Rect2(0, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_02as3"]
+atlas = ExtResource("1_acmcs")
+region = Rect2(192, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d8ouy"]
+atlas = ExtResource("1_acmcs")
+region = Rect2(384, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jqb4i"]
+atlas = ExtResource("1_acmcs")
+region = Rect2(576, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e6wnf"]
+atlas = ExtResource("1_acmcs")
+region = Rect2(768, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_612vm"]
+atlas = ExtResource("1_acmcs")
+region = Rect2(960, 0, 192, 192)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_taumj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vnrop")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_02as3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d8ouy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jqb4i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e6wnf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_612vm")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pinrc"]
+radius = 21.0238
+
+[node name="knight" type="Node2D"]
+
+[node name="player" type="CharacterBody2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="player"]
+sprite_frames = SubResource("SpriteFrames_taumj")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.137523
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="player"]
+position = Vector2(0, 11)
+shape = SubResource("CircleShape2D_pinrc")
