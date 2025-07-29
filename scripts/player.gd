@@ -1,12 +1,14 @@
 extends CharacterBody2D
 
-@export var speed = 400
-
-@onready var animation_player = $AnimationPlayer
+@export var speed = 350
 @onready var sprite = $AnimatedSprite2D
 
 var state = MOVE
 var last_direction = Vector2(0, 1)
+
+func _ready():
+	# Connect the animation finished signal
+	sprite.animation_finished.connect(_on_animated_sprite_2d_animation_finished)
 
 enum {
 	MOVE,
@@ -35,8 +37,28 @@ func move_state(_delta):
 
 func attack_state():
 	velocity = Vector2.ZERO
-	animation_player.play("attack")
 	
+	# Set sprite flip and animation based on last direction
+	set_attack_animation()
+
+func set_attack_animation():
+	# Determine attack direction based on last_direction
+	if abs(last_direction.x) > abs(last_direction.y):
+		# Horizontal attack - use right_attack and flip for left
+		if last_direction.x > 0:
+			sprite.flip_h = false
+			sprite.play("right_attack")
+		else:
+			sprite.flip_h = true
+			sprite.play("right_attack")
+	else:
+		# Vertical attack
+		sprite.flip_h = false  # Reset flip for vertical attacks
+		if last_direction.y > 0:
+			sprite.play("down_attack")
+		else:
+			sprite.play("up_attack")
+
 func update_animation():
 	if velocity == Vector2.ZERO:
 		sprite.play("idle")
@@ -46,7 +68,11 @@ func update_animation():
 			sprite.flip_h = false
 		elif velocity.x < 0:
 			sprite.flip_h = true
-			
-func _on_animation_player_animation_finished(anim_name):
-	if anim_name == "attack":
+
+# Connect this to your AnimatedSprite2D's animation_finished signal
+func _on_animated_sprite_2d_animation_finished():
+	var current_anim = sprite.animation
+	
+	# Check if it's an attack animation
+	if current_anim.ends_with("_attack"):
 		state = MOVE
