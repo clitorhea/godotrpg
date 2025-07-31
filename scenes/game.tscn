@@ -1,14 +1,15 @@
 [gd_scene load_steps=3 format=3 uid="uid://bb0r2ut2bddl0"]
 
-[ext_resource type="PackedScene" uid="uid://wyt7riqjrpu7" path="res://scenes/Farm.tscn" id="1_qbsmt"]
+[ext_resource type="PackedScene" uid="uid://wyt7riqjrpu7" path="res://scenes/village.tscn" id="1_qbsmt"]
 [ext_resource type="PackedScene" uid="uid://bhrnqem6tc8bo" path="res://scenes/Chacter.tscn" id="2_qbsmt"]
 
 [node name="Game" type="Node2D"]
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(321, 181)
-scale = Vector2(0.444582, 1.02676)
-
 [node name="Village" parent="." instance=ExtResource("1_qbsmt")]
 
 [node name="knight" parent="." instance=ExtResource("2_qbsmt")]
+
+[node name="Camera2D" type="Camera2D" parent="knight"]
+scale = Vector2(0.444582, 1.02676)
+limit_smoothed = true
+position_smoothing_enabled = true

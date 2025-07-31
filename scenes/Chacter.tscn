@@ -341,7 +341,6 @@ radius = 21.0238
 [node name="knight" type="Node2D"]
 
 [node name="player" type="CharacterBody2D" parent="."]
-position = Vector2(333, 202)
 script = ExtResource("1_vnrop")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="player"]
