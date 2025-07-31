@@ -1,78 +1,104 @@
 extends CharacterBody2D
 
-@export var speed = 350
-@onready var sprite = $AnimatedSprite2D
+# Export variables for easy tweaking in editor
+@export var speed: float = 250.0
+@export var acceleration: float = 1000.0
+@export var friction: float = 1000.0
 
-var state = MOVE
-var last_direction = Vector2(0, 1)
+# Cached node references
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 
-func _ready():
-	# Connect the animation finished signal
-	sprite.animation_finished.connect(_on_animated_sprite_2d_animation_finished)
+# State management
+enum State { MOVE, ATTACK }
+var current_state: State = State.MOVE
 
-enum {
-	MOVE,
-	ATTACK
-}
+# Movement variables
+var input_direction: Vector2
+var last_direction: Vector2 = Vector2.DOWN
+var current_animation: String = ""
 
-func _physics_process(delta):
-	match state:
-		MOVE:
-			move_state(delta)
-		ATTACK:
-			attack_state()
+# Attack state management
+var is_attacking: bool = false
 
-func move_state(_delta):
-	var input_direction = Input.get_vector("left", "right", "up", "down")
-	velocity = input_direction * speed
-	move_and_slide()
+func _ready() -> void:
+	sprite.animation_finished.connect(_on_animation_finished)
+
+func _physics_process(delta: float) -> void:
+	match current_state:
+		State.MOVE:
+			handle_movement(delta)
+		State.ATTACK:
+			handle_attack(delta)
+
+func handle_movement(delta: float) -> void:
+	# Get input once per frame
+	input_direction = Input.get_vector("left", "right", "up", "down")
 	
+	# Apply acceleration/friction for smoother movement
 	if input_direction != Vector2.ZERO:
+		velocity = velocity.move_toward(input_direction * speed, acceleration * delta)
 		last_direction = input_direction
-		
-	update_animation()
+	else:
+		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 	
-	if Input.is_action_just_pressed("swing"):
-		state = ATTACK
-
-func attack_state():
-	velocity = Vector2.ZERO
+	move_and_slide()
+	update_movement_animation()
 	
-	# Set sprite flip and animation based on last direction
-	set_attack_animation()
+	# Check for attack input
+	if Input.is_action_just_pressed("swing") and not is_attacking:
+		start_attack()
 
-func set_attack_animation():
-	# Determine attack direction based on last_direction
+func handle_attack(delta: float) -> void:
+	# Stop movement during attack
+	velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
+	move_and_slide()
+
+func start_attack() -> void:
+	current_state = State.ATTACK
+	is_attacking = true
+	play_attack_animation()
+
+func play_attack_animation() -> void:
+	var anim_name: String
+	var flip_sprite: bool = false
+	
+	# Determine attack animation based on last direction
 	if abs(last_direction.x) > abs(last_direction.y):
-		# Horizontal attack - use right_attack and flip for left
-		if last_direction.x > 0:
-			sprite.flip_h = false
-			sprite.play("right_attack")
-		else:
-			sprite.flip_h = true
-			sprite.play("right_attack")
+		# Horizontal attack
+		anim_name = "right_attack"
+		flip_sprite = last_direction.x < 0
 	else:
 		# Vertical attack
-		sprite.flip_h = false  # Reset flip for vertical attacks
-		if last_direction.y > 0:
-			sprite.play("down_attack")
-		else:
-			sprite.play("up_attack")
-
-func update_animation():
-	if velocity == Vector2.ZERO:
-		sprite.play("idle")
-	else:
-		sprite.play("walking")
-		if velocity.x > 0:
-			sprite.flip_h = false
-		elif velocity.x < 0:
-			sprite.flip_h = true
-
-# Connect this to your AnimatedSprite2D's animation_finished signal
-func _on_animated_sprite_2d_animation_finished():
-	var current_anim = sprite.animation
+		anim_name = "up_attack" if last_direction.y < 0 else "down_attack"
+		flip_sprite = false
 	
-	# Check if it's an attack animation
-	if current_anim.ends_with("_attack"):
-		state = MOVE
+	sprite.flip_h = flip_sprite
+	play_animation(anim_name)
+
+func update_movement_animation() -> void:
+	var target_anim: String
+	
+	if velocity.length() < 10.0:  # Small threshold to avoid jitter
+		target_anim = "idle"
+	else:
+		target_anim = "walking"
+		# Update sprite flip for horizontal movement
+		if input_direction.x > 0:
+			sprite.flip_h = false
+		elif input_direction.x < 0:
+			sprite.flip_h = true
+	
+	play_animation(target_anim)
+
+func play_animation(anim_name: String) -> void:
+	# Only play if different from current to avoid unnecessary calls
+	if current_animation != anim_name:
+		current_animation = anim_name
+		sprite.play(anim_name)
+
+func _on_animation_finished() -> void:
+	# Handle attack animation completion
+	if is_attacking and sprite.animation.ends_with("_attack"):
+		is_attacking = false
+		current_state = State.MOVE
+		current_animation = ""  # Force animation update

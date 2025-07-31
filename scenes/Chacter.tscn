@@ -192,7 +192,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_4vxn5")
 }],
-"loop": true,
+"loop": false,
 "name": &"down_attack",
 "speed": 10.0
 }, {
@@ -240,7 +240,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 5.0
+"speed": 20.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -332,24 +332,22 @@ animations = [{
 }],
 "loop": true,
 "name": &"walking",
-"speed": 15.0
+"speed": 10.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pinrc"]
 radius = 21.0238
 
-[node name="knight" type="Node2D"]
-
-[node name="player" type="CharacterBody2D" parent="."]
+[node name="knight" type="CharacterBody2D"]
 script = ExtResource("1_vnrop")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="player"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -32)
 sprite_frames = SubResource("SpriteFrames_taumj")
-animation = &"idle"
+animation = &"walking"
 autoplay = "idle"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="player"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_pinrc")
 
-[connection signal="animation_finished" from="player/AnimatedSprite2D" to="player" method="_on_animated_sprite_2d_animation_finished"]
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
