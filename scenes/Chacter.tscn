@@ -1,7 +1,7 @@
 [gd_scene load_steps=47 format=3 uid="uid://bhrnqem6tc8bo"]
 
 [ext_resource type="Texture2D" uid="uid://c3al7fo2th0mu" path="res://assets/Tiny Swords (Update 010)/Factions/Knights/Troops/Warrior/Blue/Warrior_Blue.png" id="1_acmcs"]
-[ext_resource type="Script" uid="uid://dl21meodp3776" path="res://scripts/player.gd" id="1_vnrop"]
+[ext_resource type="Script" uid="uid://2bpcqhfr3c73" path="res://scripts/player_optimized.gd" id="1_vnrop"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_acmcs"]
 atlas = ExtResource("1_acmcs")
@@ -240,7 +240,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 20.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -340,14 +340,17 @@ radius = 21.0238
 
 [node name="knight" type="CharacterBody2D"]
 script = ExtResource("1_vnrop")
+speed = 250.0
+friction = 1000.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -32)
 sprite_frames = SubResource("SpriteFrames_taumj")
-animation = &"walking"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -21)
 shape = SubResource("CircleShape2D_pinrc")
 
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

@@ -1,15 +1,44 @@
-[gd_scene load_steps=3 format=3 uid="uid://bb0r2ut2bddl0"]
+[gd_scene load_steps=6 format=3 uid="uid://bb0r2ut2bddl0"]
 
 [ext_resource type="PackedScene" uid="uid://wyt7riqjrpu7" path="res://scenes/village.tscn" id="1_qbsmt"]
 [ext_resource type="PackedScene" uid="uid://bhrnqem6tc8bo" path="res://scenes/Chacter.tscn" id="2_qbsmt"]
+[ext_resource type="PackedScene" uid="uid://bw8x7y2a4vt1n" path="res://scenes/Enemy.tscn" id="3_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://dthcolpfadq1h" path="res://scenes/woodtowerblue.tscn" id="4_lbhrr"]
+[ext_resource type="PackedScene" uid="uid://btdh071xtdp2r" path="res://scenes/barrelblue.tscn" id="5_iywne"]
 
 [node name="Game" type="Node2D"]
 
 [node name="Village" parent="." instance=ExtResource("1_qbsmt")]
 
 [node name="knight" parent="." instance=ExtResource("2_qbsmt")]
+unique_name_in_owner = true
 
 [node name="Camera2D" type="Camera2D" parent="knight"]
-scale = Vector2(0.444582, 1.02676)
+zoom = Vector2(0.75, 0.75)
+limit_left = -1024
+limit_top = -540
+limit_right = 1041
+limit_bottom = 540
 limit_smoothed = true
 position_smoothing_enabled = true
+
+[node name="Enemy5" type="Node" parent="."]
+
+[node name="Enemy" parent="Enemy5" instance=ExtResource("3_lnu2h")]
+position = Vector2(463, -141)
+
+[node name="Enemy2" parent="Enemy5" instance=ExtResource("3_lnu2h")]
+position = Vector2(921, -14)
+
+[node name="Enemy3" parent="Enemy5" instance=ExtResource("3_lnu2h")]
+position = Vector2(702, -7)
+
+[node name="Enemy4" parent="Enemy5" instance=ExtResource("3_lnu2h")]
+position = Vector2(737, -348)
+
+[node name="woodblue" parent="." instance=ExtResource("4_lbhrr")]
+position = Vector2(734, -243)
+scale = Vector2(2, 2)
+
+[node name="CharacterBody2D" parent="." instance=ExtResource("5_iywne")]
+position = Vector2(799, -396)
